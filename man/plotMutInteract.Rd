@@ -76,5 +76,5 @@ mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
 \donttest{set.seed(1)
 final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
-plotMutInteract(freq_matrix=PTMB_matrix, genes=final_character,nShiftSymbols =1)
+plotMutInteract(freq_matrix=PTMB_matrix, genes=final_character,nShiftSymbols =0.3)
 }

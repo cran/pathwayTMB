@@ -28,7 +28,7 @@ get_mut_matrix<-function(maffile,is.TCGA=TRUE,mut_fre=0,nonsynonymous = TRUE,cut
     for(i in 1:dim(data_9)[2]){
       data_9[,i]<-as.character(data_9[,i])
     }
-    data_9[,5]<-substr(gsub(pattern = "\\-",replacement = "\\.",x =data_9[,5]))
+    data_9[,5]<-substr(gsub(pattern = "\\-",replacement = "\\.",x =data_9[,5]),1,16)
   }else{
     data_9<-data[,c(1,2,10,11,17)]
   }

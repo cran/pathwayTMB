@@ -48,7 +48,7 @@ genes<-names(sort(gene_fre,decreasing = TRUE))[1:20]
 plotMutInteract(freq_matrix=mut_matrix, genes=genes,returnAll = FALSE)
 #pathways' mutually exclusive co-occurrence chart
 plotMutInteract(freq_matrix=PTMB_matrix,genes=final_character,
-                nShiftSymbols =1,returnAll = FALSE)
+                nShiftSymbols =0.3,returnAll = FALSE)
 
 ## ----fig.height=6, fig.width=8,warning=FALSE,results='hold'-------------------
 #calculate the PTMB-related riskscore

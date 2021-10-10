@@ -42,7 +42,7 @@
 #' PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
 #' \donttest{set.seed(1)
 #' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
-#' plotMutInteract(freq_matrix=PTMB_matrix, genes=final_character,nShiftSymbols =1)
+#' plotMutInteract(freq_matrix=PTMB_matrix, genes=final_character,nShiftSymbols =0.3)
 
 plotMutInteract<-function (freq_matrix, genes, pvalue = c(0.05, 0.01),returnAll = TRUE,fontSize = 0.8, showSigSymbols = TRUE,showCounts = FALSE, countStats = "all", countType = "all",
                            countsFontSize = 0.8, countsFontColor = "black", colPal = "BrBG",nShiftSymbols = 5, sigSymbolsSize = 2,sigSymbolsFontSize = 0.9, pvSymbols = c(46, 42), limitColorBreaks = TRUE){
@@ -108,7 +108,7 @@ plotMutInteract<-function (freq_matrix, genes, pvalue = c(0.05, 0.01),returnAll 
     col_pal = RColorBrewer::brewer.pal(9, colPal)
     col_pal = grDevices::colorRampPalette(colors = col_pal)
     col_pal = col_pal(m * n - 1)
-    interactions[lower.tri(x = interactions, diag = TRUE)] = NA
+    interactions[lower.tri(x = interactions, diag = FALSE)] = NA
     oldpar <- par(no.readonly = TRUE)
     on.exit(par(oldpar))
     par(bty = "n", mar = c(1, 4, 4, 2) + 0.1, las = 2,
