@@ -81,7 +81,7 @@ The function **get_gene_length** can extract coding genes' length from gene tran
 
 ```{r echo =TRUE, results = 'hide',eval=FALSE}
 #calculate coding genes' length, filepath--the path of the GTF file
-get_gene_length(filepath)
+#get_gene_length(filepath)
 
 ```
 <br/>

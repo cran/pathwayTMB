@@ -1,8 +1,8 @@
-ce23ae8980026b2c6a4722456563f0a7 *DESCRIPTION
-a129bfd468fba74713421f90e5227f54 *NAMESPACE
+8a1774f034ef906e97590774a3453149 *DESCRIPTION
+55f2f683bb7a7758a8611d38ba41097f *NAMESPACE
 f01df2e3e97baed930604527045b12a5 *R/data.R
-385eeff7e83bc6957fdc85b99605135b *R/main.R
-eb213a6820c51ddb6aceec58de69a66d *R/visualization.R
+d73bd1eab4866352f6662d3b7611c263 *R/main.R
+3e93fe713ffdcb9bfb052d9ca6ece334 *R/visualization.R
 9021ec34126bc134308889c97440106b *build/vignette.rds
 9a2b9e68ab899d8a0b158d54f8dc8914 *data/PTMB_matrix.rda
 86dac5cb2ddb79a88f1eff23ec41234d *data/final_character.rda
@@ -11,9 +11,9 @@ ab01145e9d2e062bffde8fe8179f65a8 *data/genesmbol.rda
 0ebebd115da9d8d93bb26ae26156ffac *data/mut_matrix.rda
 5448904ccbdf81798af3f34c2045f05d *data/sur.rda
 6bd42a752b7e609d559192998af14750 *inst/WORDLIST
-c8c015d9baf0a6cd7defcdea3508c7e8 *inst/doc/pathwayTMB.R
-45024536c0f70fa61158b6dd6d9ac0b1 *inst/doc/pathwayTMB.Rmd
-826839355327f1759e38a5f5b086251b *inst/doc/pathwayTMB.html
+c2222b875b47efe10b65fef3fd7720eb *inst/doc/pathwayTMB.R
+fdb140d4a9049f7a7408d0357da2773b *inst/doc/pathwayTMB.Rmd
+5a855bd1e9216a3cd90fa6fc87ad5bdd *inst/doc/pathwayTMB.html
 132e528cda27d1056ce284a0bfaf5739 *inst/extdata/data_mutations_extended.txt
 60841aa8346d5fdca30d6302c12886e9 *inst/extdata/response.csv
 3c516ab65b48e692b7b7053770a21644 *inst/extdata/sur.csv
@@ -24,7 +24,6 @@ cfe58821de241dcc49c286e041194da7 *man/gene_path.Rd
 e3e4b4094f477fbdefea5455945d2c9e *man/genesmbol.Rd
 d2780b8f5225ce1b82c2072f839ea7c6 *man/get_PTMB.Rd
 0d7dd79e18b8ae6bb2a46776aa7bd0b6 *man/get_final_signature.Rd
-38397d1abb7d0e3f8e98e427ef1126aa *man/get_gene_length.Rd
 00c240d781ba051bbe24a2a8b417a3a9 *man/get_mut_matrix.Rd
 77ed10eaf63115c34d20e604f1f5d9b4 *man/mut_matrix.Rd
 d593db907f5c8b5e025b88bcfd2d509d *man/plotKMcurves.Rd
@@ -33,4 +32,4 @@ d593db907f5c8b5e025b88bcfd2d509d *man/plotKMcurves.Rd
 95cc1539283f0b2a7d2f45cbe742c639 *man/sur.Rd
 332173f20d20942c02019350ea4dcadc *tests/spelling.R
 a4e0a9e27b6453c6c5fe01473a3bca55 *vignettes/corp-styles.css
-45024536c0f70fa61158b6dd6d9ac0b1 *vignettes/pathwayTMB.Rmd
+fdb140d4a9049f7a7408d0357da2773b *vignettes/pathwayTMB.Rmd

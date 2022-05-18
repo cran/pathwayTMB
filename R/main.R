@@ -21,7 +21,7 @@
 #' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 get_mut_matrix<-function(maffile,is.TCGA=TRUE,mut_fre=0,nonsynonymous = TRUE,cut_fisher.pval=1,cut_oddsRatio=1,sur){
   if(nonsynonymous){
-    data<-as.data.frame(read.maf(maffile)@data,stringsAsFactors = default.stringsAsFactors())
+    data<-as.data.frame(read.maf(maffile)@data)
   }else{data<-read.delim( maffile, header = TRUE, comment.char = '#', stringsAsFactors = FALSE )}
   if(is.TCGA){
     data_9<-data[,c(1,2,9,10,16)]
@@ -68,39 +68,6 @@ get_mut_matrix<-function(maffile,is.TCGA=TRUE,mut_fre=0,nonsynonymous = TRUE,cut
   freq_matrix<-freq_matrix[gene,]
   return(freq_matrix)
 }
-
-#' @title Extract coding genes' length from gene transfer format(GTF) file.
-#' @description Extract coding genes' length from gene transfer format(GTF) file.
-#' @param filepath Input gene transfer format file. It must be an absolute path or the name relatived to the current working directory.
-#' @return Return a list of genes' length.
-#' @importFrom GenomicFeatures makeTxDbFromGFF
-#' @importFrom GenomicFeatures exonsBy
-#' @importFrom purrr reduce
-#' @importFrom BiocGenerics width
-#' @importFrom clusterProfiler bitr
-#' @export
-get_gene_length<-function(filepath){
-  txdb <-makeTxDbFromGFF(filepath,format="gtf")
-  exon<-exonsBy(txdb, "gene")
-  exonic.gene.sizes <- lapply(exon,function(x){sum(width(reduce(x)))})
-  a<-names(exonic.gene.sizes)
-  c<-c()
-  for(i in 1:length(a)){
-    b<-strsplit(a[i],split = "\\.")[[1]][1]
-    c<-c(c,b)
-  }
-  exonic.gene.sizes<-exonic.gene.sizes[-which(duplicated(c))]
-  uni_c<-unique(c)
-  eg<-bitr(uni_c,fromType = "ENSEMBL",toType = "SYMBOL",OrgDb = "org.Hs.eg.db")
-  b<-c()
-  for(i in 1:length(eg[,1])){
-    a<-which(grepl(eg[i,1],names(exonic.gene.sizes),ignore.case = T))
-    b<-c(b,a)
-  }
-  genesmbol<-exonic.gene.sizes[b]
-  names(genesmbol)<-eg[,2]
-  genesmbol<-genesmbol[-which(duplicated(names(genesmbol)))]
-  return(genesmbol)}
 
 #' @title Calculate the Pathway-based Tumor Mutational Burden.
 #' @description The function `get_PTMB` uses to calculate the Pathway-based Tumor Mutational Burden (PTMB). PTMB is defined as pathway-based tumor mutational burden corrected by genes’ length and number.

@@ -21,7 +21,7 @@ head(mut_matrix)[1:6,1:6]
 
 ## ----echo =TRUE, results = 'hide',eval=FALSE----------------------------------
 #  #calculate coding genes' length, filepath--the path of the GTF file
-#  get_gene_length(filepath)
+#  #get_gene_length(filepath)
 #  
 
 ## ----echo =TRUE, results = 'hold'---------------------------------------------

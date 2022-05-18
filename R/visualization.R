@@ -57,14 +57,14 @@ plotMutInteract<-function (freq_matrix, genes, pvalue = c(0.05, 0.01),returnAll 
   interactions = sapply(1:ncol(mutMat), function(i) sapply(1:ncol(mutMat),
                                                            function(j) {
                                                              f <- try(fisher.test(mutMat[, i], mutMat[, j]), silent = TRUE)
-                                                             if (class(f) == "try-error")
+                                                             if (inherits(f,"try-error"))
                                                                NA
                                                              else ifelse(f$estimate > 1, -log10(f$p.val), log10(f$p.val))
                                                            }))
   oddsRatio <- oddsGenes <- sapply(1:ncol(mutMat), function(i) sapply(1:ncol(mutMat),
                                                                       function(j) {
                                                                         f <- try(fisher.test(mutMat[, i], mutMat[, j]), silent = TRUE)
-                                                                        if (class(f) == "try-error")
+                                                                        if (inherits(f,"try-error"))
                                                                           f = NA
                                                                         else f$estimate
                                                                       }))
