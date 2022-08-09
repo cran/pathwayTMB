@@ -1,7 +1,7 @@
 Package: pathwayTMB
 Type: Package
 Title: Pathway Based Tumor Mutational Burden
-Version: 0.1.2
+Version: 0.1.3
 Maintainer: Junwei Han <hanjunwei1981@163.com>
 Authors@R: c(person(given = "Junwei", family = "Han", email = "hanjunwei1981@163.com", role  = c("aut", "cre", "cph")),
              person(given = "Xiangmei", family = "Li", role  = "aut"))
@@ -20,8 +20,8 @@ Suggests: stringi, knitr, rmarkdown, testthat, BiocManager, xfun,
         e1071, qpdf, tinytex, spelling
 Language: en-US
 NeedsCompilation: no
-Packaged: 2022-05-18 07:22:38 UTC; DELL
+Packaged: 2022-08-01 13:54:24 UTC; DELL
 Author: Junwei Han [aut, cre, cph],
   Xiangmei Li [aut]
 Repository: CRAN
-Date/Publication: 2022-05-18 08:30:02 UTC
+Date/Publication: 2022-08-09 13:50:02 UTC

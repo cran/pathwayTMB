@@ -4,8 +4,8 @@
 #' @param is.TCGA 	Is input MAF file from TCGA source. If TRUE uses only first 15 characters from Tumor_Sample_Barcode.
 #' @param mut_fre A threshold value(zero as the default value). The genes with a given mutation frequency equal or greater than the threshold value are retained for the following analysis.
 #' @param nonsynonymous Logical,tell if extract the non-synonymous somatic mutations (nonsense mutation, missense mutation, frame-shif indels, splice site, nonstop mutation, translation start site, inframe indels).
-#' @param cut_fisher.pval The significant cut_off pvalue for the fisher test.
-#' @param cut_oddsRatio The cut_off oddsRatio for the fisher test,uses to select the geneset with higher mutation frequency in alive sample group.
+#' @param cut_Cox.pval The significant cut_off pvalue for the univariate Cox regression.
+#' @param cut_HR The cut_off HR for the univariate Cox regression, uses to select the genes with survival benefit mutations.
 #' @param sur A nx2 data frame of samples' survival data,the first line is samples' survival event and the second line is samples' overall survival.
 #' @return The survival-related mutations matrix.
 #' @importFrom utils read.delim
@@ -14,12 +14,37 @@
 #' @export
 #' @examples
 #' #get the path of the mutation annotation file and samples' survival data
-#' maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
+#' \donttest{maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
 #' sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 #' sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #' #perform the function 'get_mut_matrix'
-#' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
-get_mut_matrix<-function(maffile,is.TCGA=TRUE,mut_fre=0,nonsynonymous = TRUE,cut_fisher.pval=1,cut_oddsRatio=1,sur){
+#' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)}
+get_mut_matrix<-function(maffile,is.TCGA=TRUE,mut_fre=0,nonsynonymous = TRUE,cut_Cox.pval=1,cut_HR=1,sur){
+  get_univarCox_result<-function(DE_path_sur){
+    covariates<-colnames(DE_path_sur)[1:(length(DE_path_sur[1,])-2)]
+    univ_formulas <- sapply(covariates,function(x) as.formula(paste('Surv(survival, event) ~', x)))
+    univ_models <- lapply( univ_formulas, function(x){coxph(x, data =DE_path_sur)})
+
+    univ_results <- lapply(univ_models,
+                           function(x){
+                             x <- summary(x)
+                             p.value<-signif(x$wald["pvalue"], digits=2)
+                             wald.test<-signif(x$wald["test"], digits=2)
+                             beta<-signif(x$coef[1], digits=2);#coeficient beta
+                             HR <-signif(x$coef[2], digits=2);#exp(beta)
+                             HR.confint.lower <- signif(x$conf.int[,"lower .95"], 2)
+                             HR.confint.upper <- signif(x$conf.int[,"upper .95"],2)
+
+                             res<-c(beta, HR, wald.test, p.value)
+                             names(res)<-c("beta", "HR", "wald.test",
+                                           "p.value")
+                             return(res)
+                             #return(exp(cbind(coef(x),confint(x))))
+                           })
+    res <- t(as.data.frame(univ_results, check.names = FALSE))
+    result<-as.data.frame(res)
+    return(result)
+  }
   if(nonsynonymous){
     data<-as.data.frame(read.maf(maffile)@data)
   }else{data<-read.delim( maffile, header = TRUE, comment.char = '#', stringsAsFactors = FALSE )}
@@ -45,28 +70,20 @@ get_mut_matrix<-function(maffile,is.TCGA=TRUE,mut_fre=0,nonsynonymous = TRUE,cut
   freq_matrix<-freq_matrix[which(a >= mut_fre),]
   #fisher.test
   mut_matrix<-freq_matrix
-  inter<-intersect(colnames(mut_matrix),rownames(sur))
+  inter<-intersect(rownames(sur),colnames(mut_matrix))
   mut_matrix<-mut_matrix[,inter]
   sur<-sur[inter,]
-  mut_matrix[mut_matrix>0]<-1
-  pvalue<-c()
-  oddsRatio<-c()
-  for(i in 1:length(mut_matrix[,1])){
-    a<-length(intersect(which(mut_matrix[i,]==1),which(sur[,1]==0)))
-    b<-length(intersect(which(mut_matrix[i,]==1),which(sur[,1]==1)))
-    c<-length(intersect(which(mut_matrix[i,]==0),which(sur[,1]==0)))
-    d<-length(intersect(which(mut_matrix[i,]==0),which(sur[,1]==1)))
-    x<-matrix(c(a,c,b,d),ncol=2,nrow=2)
-    p<-fisher.test(x)$p.value
-    pvalue<-c(pvalue,p)
-    OR<-fisher.test(x)$estimate
-    oddsRatio<-c(oddsRatio,OR)
-  }
-  names(pvalue)<-rownames(mut_matrix)
-  names(oddsRatio)<-rownames(mut_matrix)
-  gene<-intersect(names(which(oddsRatio>cut_oddsRatio)),names(which(pvalue<cut_fisher.pval)))
-  freq_matrix<-freq_matrix[gene,]
-  return(freq_matrix)
+  #单因素cox筛选基因
+  cox_data<-as.data.frame(cbind(t(mut_matrix),event=sur[,1],survival=sur[,2]))
+  DEpathname<-colnames(cox_data)[-c(dim(cox_data)[2],dim(cox_data)[2]-1)]
+  colnames(cox_data)<-c(paste0("a",1:length(mut_matrix[,1])),"event","survival")
+  name2name<-cbind(pathname=DEpathname,na=paste0("a",1:length(mut_matrix[,1])))
+  rownames(name2name)<-name2name[,2]
+  res<-get_univarCox_result(cox_data)
+  gene<-rownames(res)[which(res$p.value<cut_Cox.pval & res$HR<cut_HR)]
+  genes<-name2name[gene,1]
+  mut_matrix<-mut_matrix[genes,]
+  return(mut_matrix)
 }
 
 #' @title Calculate the Pathway-based Tumor Mutational Burden.
@@ -130,6 +147,7 @@ get_PTMB<-function(freq_matrix,genesmbol,path_mut_cutoff=0,gene_path){
 #' @description The function `get_final_signature` , using to filter cancer-specific dysfunction pathways (a potential marker for cancer prognostic and immunotherapy), is the main function of our analysis.
 #' @param PTMB The pathway tumor mutation burden matrix,generated by`get_PTMB`.
 #' @param sur A nx2 data frame of samples' survival data,the first line is samples' survival event and the second line is samples' overall survival.
+#' @param pval_cutoff A threshold value (0.01 as the default value) to identify the differential PTMB pathway.
 #' @importFrom stats wilcox.test
 #' @importFrom stats median
 #' @importFrom caret rfe
@@ -155,7 +173,7 @@ get_PTMB<-function(freq_matrix,genesmbol,path_mut_cutoff=0,gene_path){
 #' PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
 #' set.seed(1)
 #' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
-get_final_signature<-function(PTMB,sur){
+get_final_signature<-function(PTMB,sur,pval_cutoff=0.01){
   inter<-intersect(colnames(PTMB),rownames(sur))
   if(length(inter)==0){
     stop("please input the same sample data.")
@@ -164,8 +182,8 @@ get_final_signature<-function(PTMB,sur){
   sur<-sur[inter,]
   colnames(sur)<-c("event","survival")
   pvalue<-apply(path_TMB_inter,1,function(x){wilcox.test(as.numeric(x[which(sur[,1]==0)]),as.numeric(x[-which(sur[,1]==0)]))$p.value})
-  FC<-apply(path_TMB_inter[,which(sur[,1]==0)],1,mean)/apply(path_TMB_inter[,-which(sur[,1]==0)],1,mean)
-  DE_path<-names(pvalue)[intersect(which(pvalue<0.01),which(FC>2|FC<1/2))]
+  #FC<-apply(path_TMB_inter[,which(sur[,1]==0)],1,mean)/apply(path_TMB_inter[,-which(sur[,1]==0)],1,mean)
+  DE_path<-names(pvalue)[which(pvalue<pval_cutoff)]
   #DE_path<-names(pvalue)[which(pvalue<0.05)]
   DE_path_sur<-as.data.frame(t(rbind(path_TMB_inter[DE_path,],event=sur[,1])))
   rfProfile <- rfe(DE_path_sur[,1:(dim(DE_path_sur)[2]-1)],as.factor(DE_path_sur[,(dim(DE_path_sur)[2])]), sizes = c(1:(dim(DE_path_sur)[2]-1)),rfeControl = rfeControl(functions = rfFuncs,method = "cv"))
@@ -179,28 +197,6 @@ get_final_signature<-function(PTMB,sur){
   lasso_fit<-cv.glmnet(x,surs,family="cox",type.measure = "deviance")
   coeff<-coef(lasso_fit,s=lasso_fit$lambda.min)
   final_character<-rownames(coeff)[which(as.numeric(coeff)!=0)]
-  #
-  final_sur<-as.data.frame(cbind(DE_path_sur[,final_character],event=sur[,1],survival=sur[,2]))
-  rownames(final_sur)<-rownames(DE_path_sur)
-  DEpathname<-colnames(final_sur)[1:length(final_character)]
-  colnames(final_sur)<-c(paste0("a",1:length(final_character)),"event","survival")
-  name2name<-cbind(pathname=DEpathname,na=paste0("a",1:length(final_character)))
-  rownames(name2name)<-name2name[,2]
-  data1<-final_sur
-  pvalue_logRank<-c()
-  for(i in 1:length(final_character)){
-    data<-data1[,c(i,dim(data1)[2]-1,dim(data1)[2])]
-    a<-which(data[,1]<median(data[,1]))
-    data[which(data[,1]<median(data[,1])),1]<-"low_risk"
-    data[-a,1]<-"high_risk"
-    colnames(data)[1]<-"class"
-    fit<-survfit(Surv(survival, event) ~class,data = as.data.frame(data))
-    b<-surv_pvalue(fit,data = data)$pval
-    pvalue_logRank<-c(pvalue_logRank,b)
-  }
-  names(pvalue_logRank)<-colnames(data1)[1:length(final_character)]
-  final_character<-names(pvalue_logRank)[which(pvalue_logRank<0.05)]
-  final_character<-name2name[final_character,1]
   return(final_character)
 }
 

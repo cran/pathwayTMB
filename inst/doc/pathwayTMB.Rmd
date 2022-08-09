@@ -48,7 +48,7 @@ library(pathwayTMB)
 # Overview of the package
 The **pathwayTMB** package is a Bioinformatics tool to identify Cancer-specific pathways. And **pathwayTMB** functions can be categorized into mainly Visualization and Analysis modules. Each of these functions and a short description is summarized as shown below:   
 <br/>
-1.Obtain survival-related genes' mutation frequency matrix.  
+1.Obtain survival benefit mutations frequency matrix.  
 2.Calculate the length of encoded genes.  
 3.Infer pathway-based tumor mutational burden profiles (PTMB).  
 4.Identify Cancer-specific dysfunction pathways.   
@@ -60,7 +60,7 @@ The **pathwayTMB** package is a Bioinformatics tool to identify Cancer-specific 
 <br/>
 
 ## Obtain survival-related genes' mutation frequency matrix   
-We downloaded patients' mutation data from cBioPortal or other open source databases in MAF format. For each sample's mutation, we converted MAF format data into a mutation matrix, in which every row represents the gene and every column represents the sample. In our study, we only extract the nonsilent somatic mutations (nonsense mutation, missense mutation, frame-shift indels, splice site, nonstop mutation, translation start site, inframe indels) in protein-coding regions. Then a fisher's extract test is performed to identify high-frequency mutant genes in the alive sample group using the sample's mutant and survival data. The function **get_mut_matrix** in the **pathwayTMB** package can implement the above process. Take simulated melanoma data as an example, the command lines are as follows:  
+We downloaded patients' mutation data from cBioPortal or other open source databases in MAF format. For each sample's mutation, we converted MAF format data into a mutation matrix, in which every row represents the gene and every column represents the sample. In our study, we only extract the nonsilent somatic mutations (nonsense mutation, missense mutation, frame-shift indels, splice site, nonstop mutation, translation start site, inframe indels) in protein-coding regions. Then a univariate Cox regression test is performed to identify the mutant genes with survival benefit using the sample's mutant and survival data. The function **get_mut_matrix** in the **pathwayTMB** package can implement the above process. Take simulated melanoma data as an example, the command lines are as follows:  
 <br/>
 
 ```{r out.width=24,echo = TRUE}
@@ -102,13 +102,12 @@ head(PTMB_matrix)[1:6,1:6]
 <br/>
 
 ## Identify cancer-specific pathways
-In order to identify cancer-specific dysfunction pathways, we develop a multiple machine learning method using pathway-based tumor mutational burden profiles. The multiple machine learning method consists of four sequential steps, as follows:   
+In order to identify cancer-specific dysfunction pathways, we develop a multiple machine learning method using pathway-based tumor mutational burden profiles. The multiple machine learning method consists of three sequential steps, as follows:   
 <br/>
 
-(1) Wilcoxon test and fold change are used to tentatively identify differentially PTMB pathways between death and alive sample groups.   
+(1) Wilcoxon test is used to tentatively identify differentially PTMB pathways between death and alive sample groups.   
 (2) Then random forest regression model is performed for further dysfunction pathways screening.   
 (3) Lasso+cox regression model  is also performed for feature selection.  
-(4) The log-rank test is used to select the final survival-related pathway signature.   
 <br/>
 
 The function **get_final_signature**  in the **pathwayTMB** package can implement the above process.   

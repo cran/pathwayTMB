@@ -37,12 +37,12 @@
 #' sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 #' sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #' #perform the function 'get_mut_matrix'
-#' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
+#' \donttest{mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 #' #perform the function `get_PTMB`
 #' PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
-#' \donttest{set.seed(1)
-#' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
-#' plotMutInteract(freq_matrix=PTMB_matrix, genes=final_character,nShiftSymbols =0.3)
+#' set.seed(1)
+#' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)
+#' plotMutInteract(freq_matrix=PTMB_matrix, genes=final_character,nShiftSymbols =0.3)}
 
 plotMutInteract<-function (freq_matrix, genes, pvalue = c(0.05, 0.01),returnAll = TRUE,fontSize = 0.8, showSigSymbols = TRUE,showCounts = FALSE, countStats = "all", countType = "all",
                            countsFontSize = 0.8, countsFontColor = "black", colPal = "BrBG",nShiftSymbols = 5, sigSymbolsSize = 2,sigSymbolsFontSize = 0.9, pvSymbols = c(46, 42), limitColorBreaks = TRUE){
@@ -273,17 +273,17 @@ plotMutInteract<-function (freq_matrix, genes, pvalue = c(0.05, 0.01),returnAll 
 #' @return Return a list of riskscore and coefficient of cox regression.
 #' @examples
 #' #get the path of the mutation annotation file and samples' survival data
-#' maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
+#' \donttest{maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
 #' sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 #' sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #' #perform the function 'get_mut_matrix'
 #' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 #' #perform the function `get_PTMB`
 #' PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
-#' \donttest{set.seed(1)
-#' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
+#' set.seed(1)
+#' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)
 #' #plot the K-M survival curve
-#' plotKMcurves(t(PTMB_matrix[final_character,]),sur=sur,risk.table = TRUE)
+#' plotKMcurves(t(PTMB_matrix[final_character,]),sur=sur,risk.table = TRUE)}
 #'
 plotKMcurves<-function(sig_PTMB,sur,method="Multivariate",returnAll=TRUE,pval=TRUE,color = NULL,plots=TRUE,
                        palette = NULL,
@@ -422,10 +422,10 @@ plotKMcurves<-function(sig_PTMB,sur,method="Multivariate",returnAll=TRUE,pval=TR
 #' sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 #' sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #' #perform the function 'get_mut_matrix'
-#' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
+#' \donttest{mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 #' #perform the function `get_PTMB`
 #' PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
-#' \donttest{set.seed(1)
+#' set.seed(1)
 #' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
 #' #calculate the risksciore
 #' riskscore<-plotKMcurves(t(PTMB_matrix[final_character,]),sur=sur,plots=FALSE)$risk_score
@@ -509,10 +509,10 @@ GenePathwayOncoplots<-function(maffile,gene_path,freq_matrix,risk_score,cut_off,
 #' sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 #' sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #' #perform the function 'get_mut_matrix'
-#' mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
+#' \donttest{mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 #' #perform the function `get_PTMB`
 #' PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
-#' \donttest{set.seed(1)
+#' set.seed(1)
 #' final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
 #' #calculate the risksciore
 #' riskscore<-plotKMcurves(t(PTMB_matrix[final_character,]),sur=sur,plots=FALSE)$risk_score

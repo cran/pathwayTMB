@@ -95,10 +95,10 @@ maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
 sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #perform the function 'get_mut_matrix'
-mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
+\donttest{mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
 #perform the function `get_PTMB`
 PTMB_matrix<-get_PTMB(freq_matrix=mut_matrix,genesmbol=genesmbol,gene_path=gene_path)
-\donttest{set.seed(1)
+set.seed(1)
 final_character<-get_final_signature(PTMB=PTMB_matrix,sur=sur)}
 #calculate the risksciore
 riskscore<-plotKMcurves(t(PTMB_matrix[final_character,]),sur=sur,plots=FALSE)$risk_score

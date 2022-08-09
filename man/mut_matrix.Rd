@@ -5,7 +5,7 @@
 \alias{mut_matrix}
 \title{mut_matrix, mutations matrix}
 \format{
-An object of class \code{matrix} (inherits from \code{array}) with 1214 rows and 35 columns.
+An object of class \code{matrix} (inherits from \code{array}) with 673 rows and 35 columns.
 }
 \usage{
 mut_matrix

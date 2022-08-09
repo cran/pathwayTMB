@@ -9,8 +9,8 @@ get_mut_matrix(
   is.TCGA = TRUE,
   mut_fre = 0,
   nonsynonymous = TRUE,
-  cut_fisher.pval = 1,
-  cut_oddsRatio = 1,
+  cut_Cox.pval = 1,
+  cut_HR = 1,
   sur
 )
 }
@@ -23,9 +23,9 @@ get_mut_matrix(
 
 \item{nonsynonymous}{Logical,tell if extract the non-synonymous somatic mutations (nonsense mutation, missense mutation, frame-shif indels, splice site, nonstop mutation, translation start site, inframe indels).}
 
-\item{cut_fisher.pval}{The significant cut_off pvalue for the fisher test.}
+\item{cut_Cox.pval}{The significant cut_off pvalue for the univariate Cox regression.}
 
-\item{cut_oddsRatio}{The cut_off oddsRatio for the fisher test,uses to select the geneset with higher mutation frequency in alive sample group.}
+\item{cut_HR}{The cut_off HR for the univariate Cox regression, uses to select the genes with survival benefit mutations.}
 
 \item{sur}{A nx2 data frame of samples' survival data,the first line is samples' survival event and the second line is samples' overall survival.}
 }
@@ -37,9 +37,9 @@ The function `get_mut_matrix` converts mutation annotation file (MAF) format dat
 }
 \examples{
 #get the path of the mutation annotation file and samples' survival data
-maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
+\donttest{maf<-system.file("extdata","data_mutations_extended.txt",package = "pathwayTMB")
 sur_path<-system.file("extdata","sur.csv",package = "pathwayTMB")
 sur<-read.csv(sur_path,header=TRUE,row.names = 1)
 #perform the function 'get_mut_matrix'
-mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)
+mut_matrix<-get_mut_matrix(maffile=maf,mut_fre = 0.01,is.TCGA=FALSE,sur=sur)}
 }
